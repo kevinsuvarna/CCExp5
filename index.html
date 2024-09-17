@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Model API Gateway</title>
+</head>
+<body>
+
+    <h1>SageMaker Model API</h1> 
+    <!-- Form to send the list of numbers to the POST endpoint -->
+    <form id="postForm">
+        <label for="inputData">Enter Number Data (comma-separated):</label><br>
+        <textarea id="inputData" rows="5" cols="50"></textarea><br><br>
+        <button type="submit">Send POST Request</button>
+    </form>
+
+    <h3>POST Response:</h3>
+    <pre id="postResponse"></pre>
+
+    <script>
+        // POST request on form submission
+        document.getElementById('postForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const inputData = document.getElementById('inputData').value;
+            // Convert the input string to an array of numbers
+            // const dataArray = inputData.split(',').map(Number); // Converts comma-separated input to an array of numbers
+
+            try {
+                const response = await fetch('https://ofmn8cw56k.execute-api.ap-south-1.amazonaws.com/PROD2/api-ml-model', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ "data": inputData }), // Send the array as the "data" payload
+                });
+
+                const result = await response.json();
+                document.getElementById('postResponse').innerText = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('postResponse').innerText = 'Error: ' + error.message;
+            }
+        });
+    </script>
+
+</body>
+</html>
